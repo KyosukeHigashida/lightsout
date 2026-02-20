@@ -217,6 +217,30 @@ export class Renderer {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, logW, logH);
 
+    // 黒背景
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, logW, logH);
+
+    // グリッド線（細いシアン）
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0, 229, 255, 0.15)';
+    ctx.lineWidth = 1;
+    for (let col = 0; col <= board.cols; col++) {
+      const lx = PAD / 2 + col * (CELL + PAD);
+      ctx.beginPath();
+      ctx.moveTo(lx, PAD / 2);
+      ctx.lineTo(lx, PAD / 2 + board.rows * (CELL + PAD));
+      ctx.stroke();
+    }
+    for (let row = 0; row <= board.rows; row++) {
+      const ly = PAD / 2 + row * (CELL + PAD);
+      ctx.beginPath();
+      ctx.moveTo(PAD / 2, ly);
+      ctx.lineTo(PAD / 2 + board.cols * (CELL + PAD), ly);
+      ctx.stroke();
+    }
+    ctx.restore();
+
     for (let r = 0; r < board.rows; r++) {
       for (let c = 0; c < board.cols; c++) {
         const x = PAD + c * (CELL + PAD);
@@ -254,27 +278,27 @@ export class Renderer {
     const lit   = board.cells[r][c];
     const cur   = r === board.curRow && c === board.curCol;
     const outer = board.isOuterCell(r, c);
-    const radius = 6;
+    const radius = 2;
 
     let fillColor, shadowColor, shadowBlur;
 
     if (outer) {
       if (lit) {
-        fillColor   = '#007a7a';
-        shadowColor = '#0ff';
-        shadowBlur  = 8;
+        fillColor   = '#005f6b';
+        shadowColor = '#00e5ff';
+        shadowBlur  = 4;
       } else {
-        fillColor   = '#080830';
+        fillColor   = '#0d0d0d';
         shadowColor = 'transparent';
         shadowBlur  = 0;
       }
     } else {
       if (lit) {
-        fillColor   = '#00e5e5';
-        shadowColor = '#0ff';
-        shadowBlur  = 18;
+        fillColor   = '#ff2a8a';
+        shadowColor = '#ff2a8a';
+        shadowBlur  = 4;
       } else {
-        fillColor   = '#1c1c1c';
+        fillColor   = '#111111';
         shadowColor = 'transparent';
         shadowBlur  = 0;
       }
@@ -301,15 +325,14 @@ export class Renderer {
       ctx.restore();
     }
 
-    // カーソルのネオンアウトライン
+    // カーソルアウトライン（シアン矩形）
     if (cur) {
       ctx.save();
-      ctx.strokeStyle = '#0ff';
+      ctx.strokeStyle = '#00e5ff';
       ctx.lineWidth   = 2;
-      ctx.shadowColor = '#0ff';
-      ctx.shadowBlur  = 6;
-      this._roundRect(ctx, x + 1, y + 1, size - 2, size - 2, radius);
-      ctx.stroke();
+      ctx.shadowColor = '#00e5ff';
+      ctx.shadowBlur  = 4;
+      ctx.strokeRect(x + 1, y + 1, size - 2, size - 2);
       ctx.restore();
     }
   }
