@@ -16,6 +16,10 @@
 const GF4_SYM   = [' 0 ', ' 1 ', ' ω ', 'ω²'];
 const GF4_CLASS = ['gf4-zero', 'gf4-one', 'gf4-omega', 'gf4-omega2'];
 
+// canvas 描画用 GF(4) 定数
+const GF4_COLORS = ['#484848', '#0dd', '#cc0', '#d0d'];
+const GF4_SYMS   = ['0', '1', 'ω', 'ω²'];
+
 // HTML 特殊文字をエスケープ（ユーザ入力の安全な挿入用）
 function h(s) {
   return String(s)
@@ -39,6 +43,13 @@ export class Renderer {
     this.root.innerHTML = state.mode === 'game'
       ? this._gameHTML(state)
       : this._menuHTML(state);
+    if (state.mode === 'game') {
+      const canvas = this.root.querySelector('canvas.board');
+      if (canvas) {
+        const showGF4 = state.board.analysis || state.showAnalysis;
+        this._drawBoard(canvas, state.board, showGF4);
+      }
+    }
   }
 
   // ── メニュー画面 ──────────────────────────────────────────────
@@ -109,10 +120,7 @@ export class Renderer {
     return `
       <div class="screen game">
         ${this._headerHTML(board, showAnalysis)}
-        <table class="board"><tbody>
-          ${this._boardRows(board, showGF4)}
-          ${showGF4 ? this._gf4ColRow(board) : ''}
-        </tbody></table>
+        <canvas class="board"></canvas>
         <div class="footer">
           ${this._footerHTML(board, showAnalysis, fromGame, solved)}
         </div>
@@ -137,51 +145,6 @@ export class Renderer {
 
     const undoHint = board.history.length > 0 ? ' <span class="key">[U]</span>' : '';
     return `<p class="game-header">${label}${undoHint}</p>`;
-  }
-
-  // 盤面行（各セル + 右端の GF(4) 行和）
-  _boardRows(board, showGF4) {
-    let html = '';
-    for (let r = 0; r < board.rows; r++) {
-      let cells = '';
-      for (let c = 0; c < board.cols; c++) {
-        cells += this._cellTd(board, r, c);
-      }
-      if (showGF4) {
-        cells += `<td class="gf4-sum">${gf4HTML(board.gf4RowSum(r))}</td>`;
-      }
-      html += `<tr>${cells}</tr>`;
-    }
-    return html;
-  }
-
-  // GF(4) 列和行（下端）
-  _gf4ColRow(board) {
-    let cells = '';
-    for (let c = 0; c < board.cols; c++) {
-      cells += `<td class="gf4-sum">${gf4HTML(board.gf4ColSum(c))}</td>`;
-    }
-    cells += `<td class="gf4-sum gf4-corner"></td>`;
-    return `<tr class="gf4-col-row">${cells}</tr>`;
-  }
-
-  // 1 セルの <td>
-  _cellTd(board, r, c) {
-    const lit   = board.cells[r][c];
-    const cur   = r === board.curRow && c === board.curCol;
-    const outer = board.isOuterCell(r, c);
-    const sym   = lit ? '■' : '□';
-
-    let cls = 'cell';
-    if (outer) {
-      cls += cur ? ' outer cursor' : (lit ? ' outer lit' : ' outer');
-    } else if (cur) {
-      cls += lit ? ' cursor lit' : ' cursor';
-    } else if (lit) {
-      cls += ' lit';
-    }
-
-    return `<td class="${cls}">${sym}</td>`;
   }
 
   // フッター
@@ -232,6 +195,140 @@ export class Renderer {
         <p class="keybinds">hjkl / ↑↓←→ 移動　Space/Enter 反転　U アンドゥ　R リスタート　Q メニュー</p>
         <p class="legend"><span class="cell lit">■</span> 点灯 &nbsp; <span class="cell">□</span> 消灯</p>
       `;
+    }
+  }
+
+  // ── Canvas 描画 ───────────────────────────────────────────────
+
+  _drawBoard(canvas, board, showGF4) {
+    const CELL = 38;
+    const PAD  = 8;
+    const dpr  = window.devicePixelRatio || 1;
+
+    const logW = PAD + board.cols * (CELL + PAD) + (showGF4 ? CELL + PAD : 0);
+    const logH = PAD + board.rows * (CELL + PAD) + (showGF4 ? CELL + PAD : 0);
+
+    canvas.width  = logW * dpr;
+    canvas.height = logH * dpr;
+    canvas.style.width  = logW + 'px';
+    canvas.style.height = logH + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, logW, logH);
+
+    for (let r = 0; r < board.rows; r++) {
+      for (let c = 0; c < board.cols; c++) {
+        const x = PAD + c * (CELL + PAD);
+        const y = PAD + r * (CELL + PAD);
+        this._drawCell(ctx, board, r, c, x, y, CELL);
+      }
+    }
+
+    if (showGF4) {
+      ctx.font = `bold ${Math.floor(CELL * 0.38)}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // 右列: 行和
+      const gx = PAD + board.cols * (CELL + PAD) + CELL / 2;
+      for (let r = 0; r < board.rows; r++) {
+        const gy  = PAD + r * (CELL + PAD) + CELL / 2;
+        const val = board.gf4RowSum(r);
+        ctx.fillStyle = GF4_COLORS[val];
+        ctx.fillText(GF4_SYMS[val], gx, gy);
+      }
+
+      // 下行: 列和
+      const gy2 = PAD + board.rows * (CELL + PAD) + CELL / 2;
+      for (let c = 0; c < board.cols; c++) {
+        const gx2 = PAD + c * (CELL + PAD) + CELL / 2;
+        const val = board.gf4ColSum(c);
+        ctx.fillStyle = GF4_COLORS[val];
+        ctx.fillText(GF4_SYMS[val], gx2, gy2);
+      }
+    }
+  }
+
+  _drawCell(ctx, board, r, c, x, y, size) {
+    const lit   = board.cells[r][c];
+    const cur   = r === board.curRow && c === board.curCol;
+    const outer = board.isOuterCell(r, c);
+    const radius = 6;
+
+    let fillColor, shadowColor, shadowBlur;
+
+    if (outer) {
+      if (lit) {
+        fillColor   = '#007a7a';
+        shadowColor = '#0ff';
+        shadowBlur  = 8;
+      } else {
+        fillColor   = '#080830';
+        shadowColor = 'transparent';
+        shadowBlur  = 0;
+      }
+    } else {
+      if (lit) {
+        fillColor   = '#00e5e5';
+        shadowColor = '#0ff';
+        shadowBlur  = 18;
+      } else {
+        fillColor   = '#1c1c1c';
+        shadowColor = 'transparent';
+        shadowBlur  = 0;
+      }
+    }
+
+    // セル本体
+    ctx.save();
+    ctx.shadowColor = shadowColor;
+    ctx.shadowBlur  = shadowBlur;
+    ctx.fillStyle   = fillColor;
+    this._roundRect(ctx, x, y, size, size, radius);
+    ctx.fill();
+    ctx.restore();
+
+    // OFFセルの微ハイライト（上辺の薄い線）
+    if (!lit) {
+      ctx.save();
+      ctx.strokeStyle = outer ? '#0a0a40' : '#282828';
+      ctx.lineWidth   = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y + 1.5);
+      ctx.lineTo(x + size - radius, y + 1.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // カーソルのネオンアウトライン
+    if (cur) {
+      ctx.save();
+      ctx.strokeStyle = '#0ff';
+      ctx.lineWidth   = 2;
+      ctx.shadowColor = '#0ff';
+      ctx.shadowBlur  = 6;
+      this._roundRect(ctx, x + 1, y + 1, size - 2, size - 2, radius);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  _roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(x, y, w, h, r);
+    } else {
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
     }
   }
 }
