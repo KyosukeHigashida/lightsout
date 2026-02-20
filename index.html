@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lights Out</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import { Game }         from './src/ui/game.js';
+    import { Renderer }     from './src/ui/renderer.js';
+    import { InputHandler } from './src/ui/input.js';
+
+    const root     = document.getElementById('app');
+    const game     = new Game();
+    const renderer = new Renderer(root);
+    const input    = new InputHandler(game, renderer);
+
+    renderer.render(game);
+    input.attach();
+  </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+/* ── リセット・基本 ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #111;
+  color: #ccc;
+  font-family: 'Courier New', Courier, monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+#app {
+  width: 100%;
+  max-width: 960px;
+}
+
+/* ── メニュー ───────────────────────────────────────────────────── */
+
+.title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.prompt {
+  color: #ccc;
+  margin: 0.8rem 0 0.3rem;
+}
+
+.input-line {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.input-val {
+  color: #fff;
+  font-weight: bold;
+}
+
+.cursor {
+  color: #0ff;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.sub {
+  color: #777;
+  margin-bottom: 0.4rem;
+}
+
+.mode-option {
+  margin: 0.6rem 0;
+  padding: 0.5rem 0.8rem;
+  border-left: 3px solid #444;
+}
+
+.mode-desc {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  line-height: 1.7;
+}
+
+.error {
+  color: #f55;
+  margin: 0.5rem 0;
+}
+
+.help {
+  color: #777;
+  margin: 0.8rem 0 0.4rem;
+}
+
+.rule {
+  color: #555;
+  font-size: 0.82rem;
+  margin-top: 1rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #2a2a2a;
+}
+
+/* ── キーバッジ ─────────────────────────────────────────────────── */
+
+.key {
+  display: inline-block;
+  background: #2a2a2a;
+  color: #ddd;
+  padding: 0.05em 0.4em;
+  border: 1px solid #555;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 0.88em;
+}
+
+/* ── ゲームヘッダー ─────────────────────────────────────────────── */
+
+.game-header {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #bbb;
+}
+
+.mode-label {
+  font-weight: bold;
+  color: #fff;
+}
+
+.mode-label.analysis {
+  color: #0ff;
+}
+
+.gf4-label {
+  color: #dd0;
+  font-weight: bold;
+}
+
+/* ── 盤面テーブル ───────────────────────────────────────────────── */
+
+.board {
+  border-collapse: collapse;
+  margin: 0.6rem 0;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.board td {
+  width: 1.9rem;
+  height: 1.9rem;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #333;
+  padding: 0;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── セル状態 ──────────────────────────────────────────────────── */
+
+/* 内部・消灯 */
+.cell {
+  color: #484848;
+}
+
+/* 内部・点灯 */
+.cell.lit {
+  color: #cc0;
+  font-weight: bold;
+}
+
+/* カーソル・消灯（反転表示） */
+.cell.cursor {
+  background: #bbb;
+  color: #111;
+}
+
+/* カーソル・点灯 */
+.cell.cursor.lit {
+  background: #cc0;
+  color: #111;
+  font-weight: bold;
+}
+
+/* 外周・消灯: 青背景 + 薄青文字 */
+.cell.outer {
+  background: #00008a;
+  color: #99b;
+}
+
+/* 外周・点灯: シアン背景 + 黒文字 */
+.cell.outer.lit {
+  background: #007a7a;
+  color: #000;
+  font-weight: bold;
+}
+
+/* 外周・カーソル: 明黄背景 + 黒文字 */
+.cell.outer.cursor {
+  background: #ee0;
+  color: #111;
+}
+
+/* ── GF(4) 表示 ─────────────────────────────────────────────────── */
+
+/* 行和・列和セル */
+.gf4-sum {
+  border: 1px solid #2a2a2a;
+  padding: 0 0.15rem;
+  font-size: 0.88rem;
+  background: #161616;
+  min-width: 2.2rem;
+}
+
+/* 右下コーナー */
+.gf4-corner {
+  background: #161616;
+}
+
+/* GF(4) 値の色（インラインspan） */
+.gf4.gf4-zero   { color: #484848; }   /* 0  → ダークグレー     */
+.gf4.gf4-one    { color: #0dd;    }   /* 1  → ブライトシアン   */
+.gf4.gf4-omega  { color: #cc0;    }   /* ω  → イエロー         */
+.gf4.gf4-omega2 { color: #d0d;    }   /* ω² → ブライトマゼンタ */
+
+/* GF(4) 凡例行 */
+.gf4-legend {
+  font-size: 0.88rem;
+  color: #666;
+  margin: 0.35rem 0;
+}
+
+/* ── フッター ───────────────────────────────────────────────────── */
+
+.footer {
+  margin-top: 0.5rem;
+}
+
+.keybinds {
+  color: #666;
+  font-size: 0.82rem;
+  margin: 0.2rem 0;
+  line-height: 1.7;
+}
+
+.legend {
+  font-size: 0.88rem;
+  color: #666;
+  margin: 0.3rem 0;
+}
+
+/* legend 内の span.cell はインライン表示 */
+span.cell {
+  padding: 0 0.2em;
+  border-radius: 2px;
+}
+
+/* ── クリアメッセージ ─────────────────────────────────────────────── */
+
+.clear-msg {
+  color: #0f0;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 0.8rem 0 0.4rem;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.5; }
+}
