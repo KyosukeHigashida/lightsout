@@ -265,6 +265,7 @@ export class InputHandler {
         case 'clear':        game.clearAnalysis();    break;
         case 'toggleGF4':    game.toggleGF4();        break;
         case 'quit':         game.returnToMenu();     break;
+        case 'enterAnalysis': game.enterAnalysis();    break;
         case 'exitAnalysis': game.exitAnalysis();     break;
       }
     }

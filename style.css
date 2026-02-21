@@ -267,6 +267,17 @@ canvas.board {
   background: #200010;
 }
 
+.touch-btn--hidden {
+  color: transparent;
+  border-color: transparent;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.touch-btn--hidden:active {
+  background: transparent;
+}
+
 /* ゲーム画面フッターのボタン群 */
 .touch-controls {
   display: flex;

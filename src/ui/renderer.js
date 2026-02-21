@@ -258,7 +258,7 @@ export class Renderer {
           <button class="touch-btn" data-action="press">反転</button>
           <button class="touch-btn" data-action="undo">アンドゥ</button>
           <button class="touch-btn" data-action="restart">リスタート</button>
-          <button class="touch-btn" data-action="toggleGF4">GF₄</button>
+          <button class="touch-btn touch-btn--hidden" data-action="enterAnalysis">GF₄</button>
           <button class="touch-btn" data-action="quit">メニュー</button>
         </div>
       `;
