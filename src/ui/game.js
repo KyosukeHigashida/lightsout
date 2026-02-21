@@ -29,8 +29,8 @@ export class Game {
   menuConfirm() {
     if (this.mStep === 'rows') {
       const n = parseInt(this.mRows, 10);
-      if (isNaN(n) || n < 2 || n > 20) {
-        this.errMsg = '2〜20 の整数を入力してください';
+      if (isNaN(n) || n < 1 || n > 20) {
+        this.errMsg = '1〜20 の整数を入力してください';
         this.mRows  = '';
       } else {
         this.errMsg = '';
@@ -39,8 +39,8 @@ export class Game {
 
     } else if (this.mStep === 'cols') {
       const n = parseInt(this.mCols, 10);
-      if (isNaN(n) || n < 2 || n > 20) {
-        this.errMsg = '2〜20 の整数を入力してください';
+      if (isNaN(n) || n < 1 || n > 20) {
+        this.errMsg = '1〜20 の整数を入力してください';
         this.mCols  = '';
       } else {
         this.errMsg = '';

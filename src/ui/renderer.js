@@ -59,7 +59,7 @@ export class Renderer {
 
     if (mStep === 'rows') {
       body = `
-        <p class="prompt">行数 m を入力してください (2〜20):</p>
+        <p class="prompt">行数 m を入力してください (1〜20):</p>
         <p class="input-line">m (行数) &gt; <span class="input-val">${h(mRows)}</span><span class="cursor">█</span></p>
         <div class="touch-pad">
           <div class="numpad-grid">
@@ -83,7 +83,7 @@ export class Renderer {
     } else if (mStep === 'cols') {
       body = `
         <p class="sub">m = ${h(mRows)}</p>
-        <p class="prompt">列数 n を入力してください (2〜20):</p>
+        <p class="prompt">列数 n を入力してください (1〜20):</p>
         <p class="input-line">n (列数) &gt; <span class="input-val">${h(mCols)}</span><span class="cursor">█</span></p>
         <div class="touch-pad">
           <div class="numpad-grid">
