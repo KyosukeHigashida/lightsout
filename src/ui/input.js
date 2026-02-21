@@ -140,11 +140,6 @@ export class InputHandler {
         board.undo();
         return true;
 
-      // GF(4) オーバーレイ切替（通常モードのみ）
-      case 'g': case 'G':
-        if (!board.analysis) game.toggleGF4();
-        return true;
-
       // 解ける配置生成（S キー: モード自動判別）
       case 's': case 'S':
         game.scramble();

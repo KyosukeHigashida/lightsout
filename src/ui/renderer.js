@@ -114,7 +114,7 @@ export class Renderer {
           <p><span class="key">[1]</span> ゲームモード</p>
           <p class="mode-desc">
             盤面: ${m} 行 × ${n} 列<br>
-            hjkl/↑↓←→ 移動　Space/Enter 反転　U アンドゥ　R リスタート
+            hjkl/←↓↑→ 移動　Space/Enter 反転　U 一手戻す　R やり直し 
           </p>
         </div>
         <div class="mode-option">
@@ -122,7 +122,7 @@ export class Renderer {
           <p class="mode-desc">
             盤面: ${m + 2} 行 × ${n + 2} 列（外周1マス含む）<br>
             外周セル <span class="cell outer">□</span> は青背景で表示<br>
-            S 解ける配置　A 任意配置　hjkl/↑↓←→ 移動　Space/Enter 反転
+            S 解ける配置　A 無作為な配置　hjkl/←↓↑→ 移動　Space/Enter 反転
           </p>
         </div>
         <p class="gf4-legend">F₄: ${GF4_LEGEND}</p>
@@ -191,13 +191,13 @@ export class Renderer {
     const { analysis, singleToggle, moves } = board;
 
     if (analysis) {
-      const toggleLabel = singleToggle ? '1マス反転' : '3×3反転';
+      const toggleLabel = singleToggle ? '1マス反転' : '3×3マス反転';
       return `
-        <p class="keybinds">hjkl / ↑↓←→ 移動　Space/Enter 反転　U アンドゥ　Q メニュー</p>
+        <p class="keybinds">hjkl / ←↓↑→ 移動　Space/Enter 反転　U 一手戻す　Q メニュー</p>
         ${fromGame ? '<p class="keybinds"><span class="key">[\\]</span> ゲームモードへ戻る</p>' : ''}
         <p class="keybinds">
           <span class="key">S</span> 解ける配置生成（内部操作のみ）&nbsp;
-          <span class="key">A</span> 任意配置生成 &nbsp;
+          <span class="key">A</span> 無作為な配置生成 &nbsp;
           <span class="key">E</span> 全消灯
         </p>
         <p class="keybinds">
@@ -212,10 +212,10 @@ export class Renderer {
         ${solved ? '<p class="clear-msg">★ すべて消灯！ ★</p>' : ''}
         <div class="touch-controls">
           <button class="touch-btn" data-action="press">反転</button>
-          <button class="touch-btn" data-action="undo">アンドゥ</button>
+          <button class="touch-btn" data-action="undo">一手戻す</button>
           <button class="touch-btn" data-action="scramble">解ける配置</button>
-          <button class="touch-btn" data-action="arbitrary">任意配置</button>
-          <button class="touch-btn" data-action="toggleFlip">反転モード</button>
+          <button class="touch-btn" data-action="arbitrary">無作為な配置</button>
+          <button class="touch-btn" data-action="toggleFlip">反転モード切替</button>
           <button class="touch-btn" data-action="clear">全消灯</button>
           ${fromGame ? '<button class="touch-btn" data-action="exitAnalysis">ゲームへ戻る</button>' : ''}
         </div>
@@ -224,7 +224,7 @@ export class Renderer {
 
     } else if (showAnalysis) {
       return `
-        <p class="keybinds">hjkl / ↑↓←→ 移動　Space/Enter 反転　U アンドゥ　R リスタート　Q メニュー</p>
+        <p class="keybinds">hjkl / ←↓↑→ 移動　Space/Enter 反転　U 一手戻す　R やり直す　Q メニュー</p>
         <p class="keybinds"><span class="key">[\\]</span> GF₄ 表示オン/オフ</p>
         <p class="gf4-legend">F₄: ${GF4_LEGEND}</p>
         ${solved ? `
@@ -233,8 +233,8 @@ export class Renderer {
         ` : ''}
         <div class="touch-controls">
           <button class="touch-btn" data-action="press">反転</button>
-          <button class="touch-btn" data-action="undo">アンドゥ</button>
-          <button class="touch-btn" data-action="restart">リスタート</button>
+          <button class="touch-btn" data-action="undo">一手戻す</button>
+          <button class="touch-btn" data-action="restart">やり直す</button>
           <button class="touch-btn" data-action="toggleGF4">GF₄ OFF</button>
         </div>
         <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
@@ -252,12 +252,12 @@ export class Renderer {
 
     } else {
       return `
-        <p class="keybinds">hjkl / ↑↓←→ 移動　Space/Enter 反転　U アンドゥ　R リスタート　Q メニュー</p>
+        <p class="keybinds">hjkl / ←↓↑→ 移動　Space/Enter 反転　U 一手戻す　R やり直す　Q メニュー</p>
         <p class="legend"><span class="cell lit">■</span> 点灯 &nbsp; <span class="cell">□</span> 消灯</p>
         <div class="touch-controls">
           <button class="touch-btn" data-action="press">反転</button>
-          <button class="touch-btn" data-action="undo">アンドゥ</button>
-          <button class="touch-btn" data-action="restart">リスタート</button>
+          <button class="touch-btn" data-action="undo">一手戻す</button>
+          <button class="touch-btn" data-action="restart">やり直す</button>
         </div>
         <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
         <button class="touch-btn touch-btn--hidden touch-btn--wide" data-action="enterAnalysis"></button>
