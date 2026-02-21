@@ -66,6 +66,13 @@ export class InputHandler {
   }
 
   _onKey(e) {
+    if (this.game.mode === 'title') {
+      this.game.startMenu();
+      e.preventDefault();
+      this.renderer.render(this.game);
+      return;
+    }
+
     const handled = this.game.mode === 'menu'
       ? this._handleMenu(e)
       : this._handleGame(e);
@@ -165,17 +172,13 @@ export class InputHandler {
         if (!board.analysis) game.restart();
         return true;
 
-      // 隠しコマンド: ゲーム → 解析 / 解析 → ゲーム
-      case '\\':
-        if (!board.analysis) {
-          game.enterAnalysis();
-        } else if (game.fromGame) {
-          game.exitAnalysis();
-        }
-        return true;
-
       // 仕様の隠しコマンド: 1秒以内に Y を5回連打 → 解析モードへ
+      // 解析モード中（fromGame 時）: Y 1回でゲームモードへ戻る
       case 'y': case 'Y':
+        if (board.analysis && game.fromGame) {
+          game.exitAnalysis();
+          return true;
+        }
         if (!board.analysis && this._checkYCombo()) {
           game.enterAnalysis();
           return true;
@@ -198,6 +201,12 @@ export class InputHandler {
   }
 
   _onClick(e) {
+    if (this.game.mode === 'title') {
+      this.game.startMenu();
+      this.renderer.render(this.game);
+      return;
+    }
+
     const canvas = e.target.closest('canvas.board');
     if (canvas && this.game.mode === 'game') {
       this._handleCanvasTap(e.clientX, e.clientY, canvas);

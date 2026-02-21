@@ -42,6 +42,8 @@ export class Renderer {
   render(state) {
     this.root.innerHTML = state.mode === 'game'
       ? this._gameHTML(state)
+      : state.mode === 'title'
+      ? this._titleHTML()
       : this._menuHTML(state);
     if (state.mode === 'game') {
       const canvas = this.root.querySelector('canvas.board');
@@ -50,6 +52,18 @@ export class Renderer {
         this._drawBoard(canvas, state.board, showGF4);
       }
     }
+  }
+
+  // ── タイトル画面 ──────────────────────────────────────────────
+
+  _titleHTML() {
+    return `
+      <div class="screen title">
+        <h1 class="title">LIGHTS OUT</h1>
+        <p class="title-start">タップまたは任意のキーでスタート<span class="cursor">█</span></p>
+        <p class="rule">【ルール】パネルを押すとそのパネルと周囲8マスが反転。すべて消灯させればクリア！</p>
+      </div>
+    `;
   }
 
   // ── メニュー画面 ──────────────────────────────────────────────
@@ -127,8 +141,8 @@ export class Renderer {
         </div>
         <p class="gf4-legend">F₄: ${GF4_LEGEND}</p>
         <div class="touch-pad">
-          <button class="touch-btn" data-action="mode1">1 ゲームモード</button>
-          <button class="touch-btn" data-action="mode2">2 数理解析モード</button>
+          <button class="touch-btn" data-action="mode1">ゲームモード</button>
+          <button class="touch-btn" data-action="mode2">数理解析モード</button>
           <button class="touch-btn touch-btn--back" data-action="delete">← 戻る</button>
         </div>
       `;
@@ -194,7 +208,7 @@ export class Renderer {
       const toggleLabel = singleToggle ? '1マス反転' : '3×3マス反転';
       return `
         <p class="keybinds">hjkl / ←↓↑→ 移動　Space/Enter 反転　U 一手戻す　Q メニュー</p>
-        ${fromGame ? '<p class="keybinds"><span class="key">[\\]</span> ゲームモードへ戻る</p>' : ''}
+        ${fromGame ? '<p class="keybinds"><span class="key">[Y]</span> ゲームモードへ戻る</p>' : ''}
         <p class="keybinds">
           <span class="key">S</span> 解ける配置生成（内部操作のみ）&nbsp;
           <span class="key">A</span> 無作為な配置生成 &nbsp;

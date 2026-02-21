@@ -9,7 +9,7 @@ import { fillOuterToZeroGF4 } from '../core/solver.js';
 export class Game {
   constructor() {
     // モード
-    this.mode = 'menu';   // 'menu' | 'game'
+    this.mode = 'title';  // 'title' | 'menu' | 'game'
 
     // メニュー状態
     this.mStep  = 'rows'; // 'rows' | 'cols' | 'mode'
@@ -21,6 +21,13 @@ export class Game {
     this.board        = null;
     this.showAnalysis = false; // 通常ゲームモードの GF(4) オーバーレイ
     this.fromGame     = false; // 解析モードにゲームモードから遷移した場合 true
+  }
+
+  // ── タイトル操作 ──────────────────────────────────────────────
+
+  // 任意キー / タップ: タイトル → メニューへ遷移
+  startMenu() {
+    this.mode = 'menu';
   }
 
   // ── メニュー操作 ──────────────────────────────────────────────
