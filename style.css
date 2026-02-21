@@ -195,6 +195,92 @@ span.cell {
   border-radius: 2px;
 }
 
+/* ── タッチ操作 ─────────────────────────────────────────────────── */
+
+canvas.board {
+  touch-action: none;
+}
+
+/* メニュー画面の数字パッド・モードボタンエリア */
+.touch-pad {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 数字パッド: 3列グリッド */
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  gap: 6px;
+}
+
+/* 数字ボタン: 正方形 */
+.numpad-btn {
+  width: 56px;
+  height: 56px;
+  background: #0a0a0a;
+  color: #00e5ff;
+  border: 1px solid #00e5ff;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.numpad-btn:active {
+  background: #002a30;
+}
+
+/* ゲーム画面アクションボタン */
+.touch-btn {
+  width: 100%;
+  min-height: 48px;
+  background: #0a0a0a;
+  color: #00e5ff;
+  border: 1px solid #00e5ff;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+  padding: 0.4rem 0.8rem;
+}
+
+.touch-btn:active {
+  background: #002a30;
+}
+
+.touch-btn--back {
+  color: #ff2a8a;
+  border-color: #ff2a8a;
+}
+
+.touch-btn--back:active {
+  background: #200010;
+}
+
+/* ゲーム画面フッターのボタン群 */
+.touch-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.8rem;
+}
+
+.touch-controls .touch-btn {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 80px;
+}
+
 /* ── クリアメッセージ ─────────────────────────────────────────────── */
 
 .clear-msg {

@@ -61,6 +61,23 @@ export class Renderer {
       body = `
         <p class="prompt">行数 m を入力してください (2〜20):</p>
         <p class="input-line">m (行数) &gt; <span class="input-val">${h(mRows)}</span><span class="cursor">█</span></p>
+        <div class="touch-pad">
+          <div class="numpad-grid">
+            <button class="numpad-btn" data-action="digit7">7</button>
+            <button class="numpad-btn" data-action="digit8">8</button>
+            <button class="numpad-btn" data-action="digit9">9</button>
+            <button class="numpad-btn" data-action="digit4">4</button>
+            <button class="numpad-btn" data-action="digit5">5</button>
+            <button class="numpad-btn" data-action="digit6">6</button>
+            <button class="numpad-btn" data-action="digit1">1</button>
+            <button class="numpad-btn" data-action="digit2">2</button>
+            <button class="numpad-btn" data-action="digit3">3</button>
+            <span></span>
+            <button class="numpad-btn" data-action="digit0">0</button>
+            <button class="numpad-btn" data-action="delete">⌫</button>
+          </div>
+          <button class="touch-btn" data-action="confirm">決定 (Enter)</button>
+        </div>
       `;
 
     } else if (mStep === 'cols') {
@@ -68,6 +85,23 @@ export class Renderer {
         <p class="sub">m = ${h(mRows)}</p>
         <p class="prompt">列数 n を入力してください (2〜20):</p>
         <p class="input-line">n (列数) &gt; <span class="input-val">${h(mCols)}</span><span class="cursor">█</span></p>
+        <div class="touch-pad">
+          <div class="numpad-grid">
+            <button class="numpad-btn" data-action="digit7">7</button>
+            <button class="numpad-btn" data-action="digit8">8</button>
+            <button class="numpad-btn" data-action="digit9">9</button>
+            <button class="numpad-btn" data-action="digit4">4</button>
+            <button class="numpad-btn" data-action="digit5">5</button>
+            <button class="numpad-btn" data-action="digit6">6</button>
+            <button class="numpad-btn" data-action="digit1">1</button>
+            <button class="numpad-btn" data-action="digit2">2</button>
+            <button class="numpad-btn" data-action="digit3">3</button>
+            <span></span>
+            <button class="numpad-btn" data-action="digit0">0</button>
+            <button class="numpad-btn" data-action="delete">⌫</button>
+          </div>
+          <button class="touch-btn" data-action="confirm">決定 (Enter)</button>
+        </div>
       `;
 
     } else {
@@ -92,6 +126,11 @@ export class Renderer {
           </p>
         </div>
         <p class="gf4-legend">F₄: ${GF4_LEGEND}</p>
+        <div class="touch-pad">
+          <button class="touch-btn" data-action="mode1">1 ゲームモード</button>
+          <button class="touch-btn" data-action="mode2">2 数理解析モード</button>
+          <button class="touch-btn touch-btn--back" data-action="delete">← 戻る</button>
+        </div>
       `;
     }
 
@@ -171,6 +210,16 @@ export class Renderer {
         </p>
         <p class="gf4-legend">F₄: ${GF4_LEGEND}</p>
         ${solved ? '<p class="clear-msg">★ すべて消灯！ ★</p>' : ''}
+        <div class="touch-controls">
+          <button class="touch-btn" data-action="press">反転</button>
+          <button class="touch-btn" data-action="undo">アンドゥ</button>
+          <button class="touch-btn" data-action="scramble">解ける配置</button>
+          <button class="touch-btn" data-action="arbitrary">任意配置</button>
+          <button class="touch-btn" data-action="toggleFlip">反転モード</button>
+          <button class="touch-btn" data-action="clear">全消灯</button>
+          <button class="touch-btn" data-action="quit">メニュー</button>
+          ${fromGame ? '<button class="touch-btn" data-action="exitAnalysis">ゲームへ戻る</button>' : ''}
+        </div>
       `;
 
     } else if (showAnalysis) {
@@ -182,18 +231,36 @@ export class Renderer {
           <p class="clear-msg">★ CLEAR！すべて消灯！手数: ${moves} ★</p>
           <p class="keybinds">[R] もう一度 &nbsp; [Q] メニューへ</p>
         ` : ''}
+        <div class="touch-controls">
+          <button class="touch-btn" data-action="press">反転</button>
+          <button class="touch-btn" data-action="undo">アンドゥ</button>
+          <button class="touch-btn" data-action="restart">リスタート</button>
+          <button class="touch-btn" data-action="toggleGF4">GF₄ OFF</button>
+          <button class="touch-btn" data-action="quit">メニュー</button>
+        </div>
       `;
 
     } else if (solved) {
       return `
         <p class="clear-msg">★ CLEAR！すべて消灯！手数: ${moves} ★</p>
         <p class="keybinds">[R] もう一度 &nbsp; [Q] メニューへ</p>
+        <div class="touch-controls">
+          <button class="touch-btn" data-action="restart">もう一度</button>
+          <button class="touch-btn" data-action="quit">メニュー</button>
+        </div>
       `;
 
     } else {
       return `
         <p class="keybinds">hjkl / ↑↓←→ 移動　Space/Enter 反転　U アンドゥ　R リスタート　Q メニュー</p>
         <p class="legend"><span class="cell lit">■</span> 点灯 &nbsp; <span class="cell">□</span> 消灯</p>
+        <div class="touch-controls">
+          <button class="touch-btn" data-action="press">反転</button>
+          <button class="touch-btn" data-action="undo">アンドゥ</button>
+          <button class="touch-btn" data-action="restart">リスタート</button>
+          <button class="touch-btn" data-action="toggleGF4">GF₄</button>
+          <button class="touch-btn" data-action="quit">メニュー</button>
+        </div>
       `;
     }
   }
@@ -201,9 +268,14 @@ export class Renderer {
   // ── Canvas 描画 ───────────────────────────────────────────────
 
   _drawBoard(canvas, board, showGF4) {
-    const CELL = 38;
     const PAD  = 8;
+    const totalCols = board.cols + (showGF4 ? 1 : 0);
+    const availW = Math.min(window.innerWidth - 40, 652);
+    const CELL = Math.max(12, Math.min(38, Math.floor((availW - PAD) / totalCols) - PAD));
     const dpr  = window.devicePixelRatio || 1;
+
+    canvas.dataset.cellSize = CELL;
+    canvas.dataset.padSize  = PAD;
 
     const logW = PAD + board.cols * (CELL + PAD) + (showGF4 ? CELL + PAD : 0);
     const logH = PAD + board.rows * (CELL + PAD) + (showGF4 ? CELL + PAD : 0);

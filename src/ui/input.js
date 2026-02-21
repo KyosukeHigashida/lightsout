@@ -46,15 +46,23 @@ export class InputHandler {
     // Y キー連打コンボ（仕様の隠しコマンド: 1秒以内に5回）
     this._yTimes = [];
 
-    this._onKey = this._onKey.bind(this);
+    this._onKey   = this._onKey.bind(this);
+    this._onTouch = this._onTouch.bind(this);
+    this._onClick = this._onClick.bind(this);
+
+    this._appEl = document.getElementById('app');
   }
 
   attach() {
     document.addEventListener('keydown', this._onKey);
+    this._appEl.addEventListener('touchstart', this._onTouch, { passive: false });
+    this._appEl.addEventListener('click', this._onClick);
   }
 
   detach() {
     document.removeEventListener('keydown', this._onKey);
+    this._appEl.removeEventListener('touchstart', this._onTouch);
+    this._appEl.removeEventListener('click', this._onClick);
   }
 
   _onKey(e) {
@@ -181,6 +189,87 @@ export class InputHandler {
     }
 
     return false;
+  }
+
+  // ── タッチ / クリック ────────────────────────────────────────
+
+  _onTouch(e) {
+    const canvas = e.target.closest('canvas.board');
+    if (canvas && this.game.mode === 'game') {
+      e.preventDefault();
+      const touch = e.touches[0];
+      this._handleCanvasTap(touch.clientX, touch.clientY, canvas);
+    }
+  }
+
+  _onClick(e) {
+    const canvas = e.target.closest('canvas.board');
+    if (canvas && this.game.mode === 'game') {
+      this._handleCanvasTap(e.clientX, e.clientY, canvas);
+      return;
+    }
+    const btn = e.target.closest('[data-action]');
+    if (btn) {
+      this._dispatchAction(btn.dataset.action);
+    }
+  }
+
+  _handleCanvasTap(clientX, clientY, canvas) {
+    const CELL = parseInt(canvas.dataset.cellSize, 10);
+    const PAD  = parseInt(canvas.dataset.padSize,  10);
+    if (!CELL || !PAD) return;
+
+    const rect  = canvas.getBoundingClientRect();
+    const scaleX = canvas.width  / (window.devicePixelRatio || 1) / rect.width;
+    const scaleY = canvas.height / (window.devicePixelRatio || 1) / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top)  * scaleY;
+
+    const col = Math.floor((x - PAD) / (CELL + PAD));
+    const row = Math.floor((y - PAD) / (CELL + PAD));
+
+    const { board } = this.game;
+    if (row < 0 || row >= board.rows || col < 0 || col >= board.cols) return;
+
+    board.curRow = row;
+    board.curCol = col;
+    this.game.press();
+    this.renderer.render(this.game);
+  }
+
+  _dispatchAction(action) {
+    const { game, renderer } = this;
+    const { board } = game;
+
+    if (game.mode === 'menu') {
+      const digitMatch = action.match(/^digit(\d)$/);
+      if (digitMatch) {
+        game.menuType(digitMatch[1]);
+      } else if (action === 'confirm') {
+        game.menuConfirm();
+      } else if (action === 'delete') {
+        game.menuDelete();
+      } else if (action === 'mode1') {
+        game.selectMode(false);
+      } else if (action === 'mode2') {
+        game.selectMode(true);
+      }
+    } else {
+      switch (action) {
+        case 'press':        game.press();            break;
+        case 'undo':         board.undo();            break;
+        case 'restart':      game.restart();          break;
+        case 'scramble':     game.scramble();         break;
+        case 'arbitrary':    game.arbitrary();        break;
+        case 'toggleFlip':   game.toggleFlipMode();   break;
+        case 'clear':        game.clearAnalysis();    break;
+        case 'toggleGF4':    game.toggleGF4();        break;
+        case 'quit':         game.returnToMenu();     break;
+        case 'exitAnalysis': game.exitAnalysis();     break;
+      }
+    }
+
+    renderer.render(game);
   }
 
   // Y コンボ判定: 1秒以内に5回 → true を返してカウンタをリセット
