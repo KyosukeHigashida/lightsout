@@ -217,9 +217,9 @@ export class Renderer {
           <button class="touch-btn" data-action="arbitrary">任意配置</button>
           <button class="touch-btn" data-action="toggleFlip">反転モード</button>
           <button class="touch-btn" data-action="clear">全消灯</button>
-          <button class="touch-btn" data-action="quit">メニュー</button>
           ${fromGame ? '<button class="touch-btn" data-action="exitAnalysis">ゲームへ戻る</button>' : ''}
         </div>
+        <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
       `;
 
     } else if (showAnalysis) {
@@ -236,8 +236,8 @@ export class Renderer {
           <button class="touch-btn" data-action="undo">アンドゥ</button>
           <button class="touch-btn" data-action="restart">リスタート</button>
           <button class="touch-btn" data-action="toggleGF4">GF₄ OFF</button>
-          <button class="touch-btn" data-action="quit">メニュー</button>
         </div>
+        <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
       `;
 
     } else if (solved) {
@@ -246,8 +246,8 @@ export class Renderer {
         <p class="keybinds">[R] もう一度 &nbsp; [Q] メニューへ</p>
         <div class="touch-controls">
           <button class="touch-btn" data-action="restart">もう一度</button>
-          <button class="touch-btn" data-action="quit">メニュー</button>
         </div>
+        <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
       `;
 
     } else {
@@ -258,9 +258,9 @@ export class Renderer {
           <button class="touch-btn" data-action="press">反転</button>
           <button class="touch-btn" data-action="undo">アンドゥ</button>
           <button class="touch-btn" data-action="restart">リスタート</button>
-          <button class="touch-btn touch-btn--hidden" data-action="enterAnalysis">GF₄</button>
-          <button class="touch-btn" data-action="quit">メニュー</button>
         </div>
+        <button class="touch-btn touch-btn--wide" data-action="quit">メニュー</button>
+        <button class="touch-btn touch-btn--hidden touch-btn--wide" data-action="enterAnalysis"></button>
       `;
     }
   }
